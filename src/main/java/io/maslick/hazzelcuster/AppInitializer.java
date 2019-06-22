@@ -1,4 +1,4 @@
-package io.maslick.hazzelkarst;
+package io.maslick.hazzelcuster;
 
 import com.hazelcast.core.HazelcastInstance;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +15,8 @@ public class AppInitializer implements CommandLineRunner {
 
 	private static final String[][] GREETINGS = new String[][] {
 			{ "russian", "privet" },
-			{ "english", "hello" },
-			{ "slovenian", "zdravo" }
+			{ "english", "hello!" },
+			{ "slovene", "zdravo" }
 	};
 
 	private final HazelcastInstance hazelcastInstance;

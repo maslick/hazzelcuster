@@ -7,18 +7,15 @@ simple Hazelcast k8s cluster (DNS Lookup)
 minikube start --vm-driver=xhyve --cpus 4 --memory 8192
 eval $(minikube docker-env)
 ./gradlew clean build -x test
-docker build -t maslick/hazzelkarst:0.1 build/libs
+docker build -t maslick/hazzelcaster:0.1 build/libs
 k apply -f deployment/k8s.yaml
 ```
 
 ## Python client
 ```
 k run piton --image=python:3 --rm -it --restart=Never -- bash
-root@piton:/# pip install hazelcast-python-client
-root@piton:/# python
-Python 3.7.3 (default, Jun 11 2019, 01:05:09)
-[GCC 6.3.0 20170516] on linux
-Type "help", "copyright", "credits" or "license" for more information. 
+pip install hazelcast-python-client
+python
 ```
 
 ```

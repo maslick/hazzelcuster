@@ -33,7 +33,7 @@ spec:
               value: "true"
             - name: DNS_NAME
               value: "service-hazelcast-server.default.svc.cluster.local"
-          image: "maslick/hazzelkarst:0.1"
+          image: "maslick/hazzelcaster:0.1"
           imagePullPolicy: Never
           livenessProbe:
             httpGet:

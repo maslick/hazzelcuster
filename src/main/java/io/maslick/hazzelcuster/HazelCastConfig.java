@@ -1,4 +1,4 @@
-package io.maslick.hazzelkarst;
+package io.maslick.hazzelcuster;
 
 import com.hazelcast.config.ClasspathXmlConfig;
 import com.hazelcast.config.Config;
@@ -12,7 +12,7 @@ import java.util.Collections;
 @Configuration
 public class HazelCastConfig {
 	@Bean
-	public Config config(@Value("${hazzelkarst.dns_name}") final String HAZELCAST_SERVICE_NAME) {
+	public Config config(@Value("${hazzelcuster.dns_name}") final String HAZELCAST_SERVICE_NAME) {
 		var config = new ClasspathXmlConfig("hazelcast.xml");
 		JoinConfig joinConfig = config.getNetworkConfig().getJoin();
 		joinConfig.getMulticastConfig().setEnabled(false);

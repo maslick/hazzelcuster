@@ -1,4 +1,4 @@
-package io.maslick.hazzelkarst;
+package io.maslick.hazzelcuster;
 
 import com.hazelcast.cluster.ClusterState;
 import com.hazelcast.core.HazelcastInstance;
