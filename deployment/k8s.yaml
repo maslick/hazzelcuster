@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-hazelcast-server
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    app: pod-hazelcast-server
+  ports:
+    - protocol: TCP
+      port: 5701
+      targetPort: 5701
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: pod-hazelcast-server
+spec:
+  replicas: 2
+  serviceName: service-hazelcast-server
+  selector:
+    matchLabels:
+      app: pod-hazelcast-server
+  template:
+    metadata:
+      labels:
+        app: pod-hazelcast-server
+    spec:
+      containers:
+        - env:
+            - name: K8S
+              value: "true"
+            - name: DNS_NAME
+              value: "service-hazelcast-server.default.svc.cluster.local"
+          image: "maslick/hazzelkarst:0.1"
+          imagePullPolicy: Never
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+          name: container-hazelcast-server
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 30

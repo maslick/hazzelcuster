@@ -1,0 +1,40 @@
+plugins {
+	id "java"
+	id "idea"
+	id "org.springframework.boot" version "2.1.6.RELEASE"
+	id "io.spring.dependency-management" version "1.0.7.RELEASE"
+	id "com.bmuschko.docker-remote-api" version "4.6.2"
+}
+
+group = 'io.maslick'
+version = '0.1'
+sourceCompatibility = '11'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'com.hazelcast:hazelcast:3.12.1'
+	implementation 'com.hazelcast:hazelcast-spring:3.12.1'
+	implementation 'com.hazelcast:hazelcast-kubernetes:1.5.1'
+
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+task createDockerfile(type: Dockerfile) {
+	destFile = project.file('build/libs/Dockerfile')
+	from 'amazoncorretto:11'
+	instruction 'LABEL maintainer="pavel.masloff@gmail.com"'
+	exposePort 8080
+	copyFile jar.archiveFileName.get(), '/app/app.jar'
+	workingDir '/app'
+	instruction 'CMD java -Dk8s=$K8S -jar app.jar'
+}
+
+check.dependsOn createDockerfile
