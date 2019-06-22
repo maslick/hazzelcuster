@@ -1,4 +1,4 @@
-# hazzel-karst
+# hazzelcuster
 simple Hazelcast k8s cluster (DNS Lookup)
 
 
