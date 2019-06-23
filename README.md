@@ -4,9 +4,9 @@ simple Hazelcast k8s cluster (DNS Lookup)
 ## Usage
 ```
 ./gradlew clean build -x test
-java -jar build/libs/hazzelcuster-0.1.jar -Dserver.port=8081
-java -jar build/libs/hazzelcuster-0.1.jar -Dserver.port=8082
-java -jar build/libs/hazzelcuster-0.1.jar -Dserver.port=8083
+java -Dserver.port=8081 -jar build/libs/hazzelcuster-0.1.jar
+java -Dserver.port=8082 -jar build/libs/hazzelcuster-0.1.jar
+java -Dserver.port=8083 -jar build/libs/hazzelcuster-0.1.jar
 ```
 
 or 
@@ -21,7 +21,8 @@ or
 minikube start --vm-driver=xhyve --cpus 4 --memory 8192
 eval $(minikube docker-env)
 ./gradlew dockerBuild
-k apply -f deployment/k8s.yaml
+k apply -f deployment/k8s-hazzelcuster.yaml
+k apply -f deployment/k8s-mgmt-center.yaml
 ```
 
 ## Python client

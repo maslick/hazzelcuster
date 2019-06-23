@@ -45,8 +45,10 @@ spec:
         - env:
             - name: K8S
               value: "true"
-            - name: DNS_NAME
+            - name: HEADLESS_DNS
               value: "hazzelcuster-headless.default.svc.cluster.local"
+            - name: MGMT_CENTER_URL
+              value: "http://hazelcast-management-center:8080/hazelcast-mancenter"
           image: "maslick/hazzelcuster:0.1"
           imagePullPolicy: Never
           livenessProbe:

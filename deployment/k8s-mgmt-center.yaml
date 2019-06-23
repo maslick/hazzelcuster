@@ -1,0 +1,27 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: hazelcast-management-center
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: hazelcast-management-center
+    spec:
+      containers:
+        - image: hazelcast/management-center
+          name: container-hazelcast-management-center
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hazelcast-management-center
+spec:
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: hazelcast-management-center
+  type: NodePort
