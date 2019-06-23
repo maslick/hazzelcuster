@@ -57,7 +57,7 @@ logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
 
 config = hazelcast.ClientConfig()
-config.network_config.addresses.append('192.168.99.100:30010')
+config.network_config.addresses.append('minikube-ip:30010') # use '$ minikube ip' to get your node ip
 config.network_config.smart_routing = False
 client = hazelcast.HazelcastClient(config)
 
