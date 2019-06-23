@@ -1,13 +1,26 @@
 # hazzelcuster
 simple Hazelcast k8s cluster (DNS Lookup)
 
+## Usage
+```
+./gradlew clean build -x test
+java -jar build/libs/hazzelcuster-0.1.jar -Dserver.port=8081
+java -jar build/libs/hazzelcuster-0.1.jar -Dserver.port=8082
+java -jar build/libs/hazzelcuster-0.1.jar -Dserver.port=8083
+```
 
-## Installation
+or 
+```
+./gradlew bootRun -Dserver.port=8081
+./gradlew bootRun -Dserver.port=8082
+./gradlew bootRun -Dserver.port=8083
+```
+
+## K8s installation
 ```
 minikube start --vm-driver=xhyve --cpus 4 --memory 8192
 eval $(minikube docker-env)
-./gradlew clean build -x test
-docker build -t maslick/hazzelcuster:0.1 build/libs
+./gradlew dockerBuild
 k apply -f deployment/k8s.yaml
 ```
 

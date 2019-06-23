@@ -38,3 +38,13 @@ task createDockerfile(type: Dockerfile) {
 }
 
 check.dependsOn createDockerfile
+
+task dockerBuild(type: Exec) {
+	commandLine 'docker', 'build', '-t', "maslick/hazzelcuster:${project.version}", 'build/libs'
+	dependsOn build
+	test.enabled = false
+}
+
+bootRun {
+	systemProperties = System.properties
+}
