@@ -1,6 +1,9 @@
 # hazzelcuster
 simple Hazelcast k8s cluster (DNS Lookup)
 
+[![Build Status](https://travis-ci.org/maslick/hazzelcuster.svg?branch=master)](https://travis-ci.org/maslick/hazzelcuster)
+[![Docker image](https://shields.beevelop.com/docker/image/image-size/maslick/hazzelcuster/latest.svg?style=flat-square)](https://cloud.docker.com/u/maslick/repository/docker/maslick/hazzelcuster)
+
 ## Usage
 ```
 ./gradlew clean build -x test
