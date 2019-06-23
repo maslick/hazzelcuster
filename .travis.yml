@@ -1,0 +1,28 @@
+language: java
+sudo: false
+
+jdk:
+  - openjdk11
+
+services:
+  - docker
+
+stages:
+  - name: build
+  - name: docker
+
+jobs:
+  include:
+    - stage: build
+      name: "Build src"
+      script:
+        - ./gradlew clean build
+    - stage: docker
+      name: "Deploy to Docker Hub"
+      script:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - VER=$TRAVIS_BRANCH-build$TRAVIS_BUILD_NUMBER-`git rev-parse --short HEAD`
+        - ./gradlew dockerBuild
+        - docker tag maslick/hazzelcuster maslick/hazzelcuster:$VER
+        - docker push maslick/hazzelcuster:$VER
+        - docker push maslick/hazzelcuster

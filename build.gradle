@@ -40,7 +40,7 @@ task createDockerfile(type: Dockerfile) {
 check.dependsOn createDockerfile
 
 task dockerBuild(type: Exec) {
-	commandLine 'docker', 'build', '-t', "maslick/hazzelcuster:${project.version}", 'build/libs'
+	commandLine 'docker', 'build', '-t', "maslick/hazzelcuster", 'build/libs'
 	dependsOn build
 	test.enabled = false
 }
