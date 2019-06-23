@@ -7,7 +7,7 @@ simple Hazelcast k8s cluster (DNS Lookup)
 minikube start --vm-driver=xhyve --cpus 4 --memory 8192
 eval $(minikube docker-env)
 ./gradlew clean build -x test
-docker build -t maslick/hazzelcaster:0.1 build/libs
+docker build -t maslick/hazzelcuster:0.1 build/libs
 k apply -f deployment/k8s.yaml
 ```
 

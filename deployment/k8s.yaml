@@ -46,7 +46,7 @@ spec:
               value: "true"
             - name: DNS_NAME
               value: "service-hazelcast-server.default.svc.cluster.local"
-          image: "maslick/hazzelcaster:0.1"
+          image: "maslick/hazzelcuster:0.1"
           imagePullPolicy: Never
           livenessProbe:
             httpGet:
