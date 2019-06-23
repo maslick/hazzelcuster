@@ -5,21 +5,22 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    statefulset.kubernetes.io/pod-name: pod-hazelcast-server-0
+    statefulset.kubernetes.io/pod-name: hazzelcuster-server-0
   ports:
     - protocol: TCP
       port: 5701
       targetPort: 5701
+      nodePort: 30010
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: service-hazelcast-server
+  name: hazzelcuster-headless
 spec:
   type: ClusterIP
   clusterIP: None
   selector:
-    app: pod-hazelcast-server
+    app: hazzelcuster-server
   ports:
     - protocol: TCP
       port: 5701
@@ -28,24 +29,24 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: pod-hazelcast-server
+  name: hazzelcuster-server
 spec:
   replicas: 2
-  serviceName: service-hazelcast-server
+  serviceName: hazzelcuster-headless
   selector:
     matchLabels:
-      app: pod-hazelcast-server
+      app: hazzelcuster-server
   template:
     metadata:
       labels:
-        app: pod-hazelcast-server
+        app: hazzelcuster-server
     spec:
       containers:
         - env:
             - name: K8S
               value: "true"
             - name: DNS_NAME
-              value: "service-hazelcast-server.default.svc.cluster.local"
+              value: "hazzelcuster-headless.default.svc.cluster.local"
           image: "maslick/hazzelcuster:0.1"
           imagePullPolicy: Never
           livenessProbe:

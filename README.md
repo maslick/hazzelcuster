@@ -26,7 +26,7 @@ logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
 
 config = hazelcast.ClientConfig()
-config.network_config.addresses.append('service-hazelcast-server.default.svc.cluster.local:5701')
+config.network_config.addresses.append('hazzelcuster-headless.default.svc.cluster.local:5701')
 client = hazelcast.HazelcastClient(config)
 
 helloMap = client.get_map("hello")
@@ -37,13 +37,14 @@ helloMap.get("hello").result()
 ```
 * Outside Kubernetes Cluster (Dummy Routing):
 ```
+python3
 import hazelcast, logging
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
 
 config = hazelcast.ClientConfig()
-config.network_config.addresses.append('192.168.99.100:30447') // [minikube ip]:[nodePort]
+config.network_config.addresses.append('192.168.99.100:30010')
 config.network_config.smart_routing = False
 client = hazelcast.HazelcastClient(config)
 
