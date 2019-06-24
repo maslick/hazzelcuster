@@ -72,3 +72,37 @@ helloMap.set("hello", "world!")
 helloMap.get("hello").result()
 ```
 
+## Deployment to Openshift
+Deploy Hazelcast Server and Management Center:
+```
+oc new-project hazelcast
+oc new-app -p NAMESPACE=$(oc project -q) -f deployment/openshift-hazelcast.yaml
+oc create route edge management-center --service management-center-service --path /hazelcast-mancenter
+```
+
+Build hazelcast python client image:
+```
+FROM python:3
+RUN pip3 install hazelcast-python-client
+```
+
+```
+docker build -t python-hazelcast-client .
+```
+
+Start a sample container:
+```
+k run piton --image=python-hazelcast-client:latest --rm -it --restart=Never --image-pull-policy="IfNotPresent" -- bash
+python
+import hazelcast, logging
+
+logging.basicConfig()
+logging.getLogger().setLevel(logging.INFO)
+
+config = hazelcast.ClientConfig()
+config.network_config.addresses.append('hazelcast-service.hazelcast:5701')
+client = hazelcast.HazelcastClient(config)
+
+helloMap.set("hello", "world!")
+helloMap.get("hello").result()
+```
