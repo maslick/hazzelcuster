@@ -89,6 +89,11 @@ oc new-app -p NAMESPACE=$(oc project -q) -f deployment/openshift-hazelcast.yaml
 oc create route edge management-center --service management-center-service --path /hazelcast-mancenter
 ```
 
+You can also save this template to the local (per project/namespace) Openshift catalog:
+```
+oc create -f deployment/openshift-hazelcast.yaml
+```
+
 Build hazelcast python client image:
 ```
 FROM python:3

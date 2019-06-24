@@ -3,11 +3,14 @@ kind: Template
 metadata:
   name: hazelcast
   annotations:
+    openshift.io/display-name: "Hazelcast cluster"
     description: "Openshift deployment template for Hazelcast"
     tags: "hazelcast, imdg, datagrid, inmemory, kvstore, nosql, java"
-    iconClass: "icon-java"
+    version: "3.12"
+    iconClass: "icon-redis"
 labels:
   template: hazelcast-openshift-template
+message: "* To expose management center run: \n  'oc create route edge management-center --service ${MANAGEMENT_CENTER_SERVICE_NAME} --path /hazelcast-mancenter'"
 
 parameters:
   - name: HAZELCAST_IMAGE
@@ -20,7 +23,7 @@ parameters:
     required: true
   - name: NAMESPACE
     description: "Defines the namespace (project name) of the application POD of Kubernetes"
-    required: false
+    required: true
   - name: HAZELCAST_REPLICAS
     description: "Number of Hazelcast members"
     value: "3"
