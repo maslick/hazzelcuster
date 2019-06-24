@@ -72,7 +72,7 @@ helloMap.set("hello", "world!")
 helloMap.get("hello").result()
 ```
 
-## Deployment to Openshift
+## Deployment to Openshift (using vanilla Hazelcast image)
 Deploy Hazelcast Server and Management Center:
 ```
 oc new-project hazelcast
@@ -90,7 +90,7 @@ RUN pip3 install hazelcast-python-client
 docker build -t python-hazelcast-client .
 ```
 
-Start a sample container:
+Start a test python client:
 ```
 k run piton --image=python-hazelcast-client:latest --rm -it --restart=Never --image-pull-policy="IfNotPresent" -- bash
 python
