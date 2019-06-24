@@ -112,6 +112,7 @@ config = hazelcast.ClientConfig()
 config.network_config.addresses.append('hazelcast-service.hazelcast:5701')
 client = hazelcast.HazelcastClient(config)
 
+helloMap = client.get_map("hello")
 helloMap.set("hello", "world!")
 helloMap.get("hello").result()
 ```
