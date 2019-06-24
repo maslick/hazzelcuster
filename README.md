@@ -23,11 +23,20 @@ or
 ```
 minikube start --vm-driver=xhyve --cpus 4 --memory 8192
 eval $(minikube docker-env)
+```
+
+* using official Hazelcast Docker image:
+```
+k create ns hazelcast
+k apply -f deployment/k8s-hazelcast.yaml -n hazelcast
+```
+
+* using custom Hazelcast server:
+```
 ./gradlew dockerBuild
 k apply -f deployment/k8s-hazzelcuster.yaml
 k apply -f deployment/k8s-mgmt-center.yaml
 ```
-
 ## Python client
 * Within the cluster:
 ```

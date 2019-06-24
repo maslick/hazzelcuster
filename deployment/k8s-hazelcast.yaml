@@ -1,0 +1,171 @@
+# ==================================================================
+# Hazelcast server (ConfigMap + StatefulSet + Headless service)
+# ==================================================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hazelcast-configuration
+data:
+  hazelcast.xml: |-
+    <?xml version="1.0" encoding="UTF-8"?>
+    <hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.10.xsd"
+                   xmlns="http://www.hazelcast.com/schema/config"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <network>
+        <join>
+          <multicast enabled="false"/>
+          <kubernetes enabled="true"/>
+        </join>
+      </network>
+      <management-center enabled="true">http://management-center-service.${namespace}.svc:8080/hazelcast-mancenter</management-center>
+    </hazelcast>
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hazelcast
+  labels:
+    app: hazelcast
+spec:
+  replicas: 3
+  serviceName: hazelcast-headless
+  selector:
+    matchLabels:
+      app: hazelcast
+  template:
+    metadata:
+      labels:
+        app: hazelcast
+        role: hazelcast
+    spec:
+      containers:
+        - name: hazelcast-openshift
+          image: hazelcast/hazelcast:3.12
+          ports:
+            - name: hazelcast
+              containerPort: 5701
+          livenessProbe:
+            httpGet:
+              path: /hazelcast/health/node-state
+              port: 5701
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /hazelcast/health/node-state
+              port: 5701
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 1
+          volumeMounts:
+            - name: hazelcast-storage
+              mountPath: /data/hazelcast
+          env:
+            - name: HAZELCAST_KUBERNETES_SERVICE_DNS
+              value: hazelcast-service.hazelcast.svc.cluster.local
+            - name: JAVA_OPTS
+              value: "-Dhazelcast.rest.enabled=true -Dhazelcast.config=/data/hazelcast/hazelcast.xml -Dnamespace=hazelcast"
+      volumes:
+        - name: hazelcast-storage
+          configMap:
+            name: hazelcast-configuration
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hazelcast-service
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    app: hazelcast
+  ports:
+    - protocol: TCP
+      port: 5701
+---
+# ==================================================================
+# Hazelcast management center (PVC + Deployment + NodePort service)
+# ==================================================================
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: management-center-volume
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: management-center
+  labels:
+    app: hazelcast
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hazelcast
+      role: mancenter
+  template:
+    metadata:
+      labels:
+        app: hazelcast
+        role: mancenter
+    spec:
+      containers:
+        - name: management-center
+          image: hazelcast/management-center
+          resources:
+            limits:
+              memory: 1Gi
+          ports:
+            - name: mancenter
+              containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /hazelcast-mancenter
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 15
+            successThreshold: 1
+            failureThreshold: 10
+          readinessProbe:
+            httpGet:
+              path: /hazelcast-mancenter
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 15
+            successThreshold: 1
+            failureThreshold: 10
+          volumeMounts:
+            - name: mancenter-storage
+              mountPath: /data
+      volumes:
+        - name: mancenter-storage
+          persistentVolumeClaim:
+            claimName: management-center-volume
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: management-center-service
+spec:
+  type: NodePort
+  selector:
+    app: hazelcast
+    role: mancenter
+  ports:
+    - protocol: TCP
+      port: 8080
+      nodePort: 30100
