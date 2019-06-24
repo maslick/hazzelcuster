@@ -121,3 +121,43 @@ helloMap = client.get_map("hello")
 helloMap.set("hello", "world!")
 helloMap.get("hello").result()
 ```
+
+## Deployment to GKE (using Terraform)
+```
+brew install terraform
+terraform -install-autocomplete
+. ~/.zshrc
+
+PROJECT=hazelcuster
+SA=$PROJECT-service-account
+cd terraform
+
+gcloud projects create $PROJECT
+gcloud config set project $PROJECT
+
+gcloud alpha billing accounts list
+gcloud alpha billing projects link $PROJECT --billing-account XXXXX-YYYYYYY-ZZZZZZ
+gcloud services enable container.googleapis.com
+
+gcloud beta iam service-accounts create $SA --display-name "$SA"
+gcloud projects add-iam-policy-binding $PROJECT --member serviceAccount:$SA@$PROJECT.iam.gserviceaccount.com --role roles/editor
+gcloud iam service-accounts keys create creds/key.json --iam-account $SA@$PROJECT.iam.gserviceaccount.com
+
+terraform init
+terraform plan
+terraform apply
+
+gcloud container clusters get-credentials $PROJECT-gke-cluster --zone=europe-west3-a
+k create ns hazelcast
+k apply -f deployment/k8s-hazelcast.yaml -n hazelcast
+```
+
+Now you can expose Hazelcast management system to the outside world via:
+1. k port-forward -n hazelcast management-center-xxxxxx 8081:8080
+2. via NodePort (get node's public IP, add firewall rule and open port 30100)
+3. via Ingress
+
+```
+terraform destroy
+gcloud projects delete $PROJECT
+```
