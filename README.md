@@ -106,7 +106,7 @@ docker build -t python-hazelcast-client .
 
 Start a test python client:
 ```
-k run piton --image=python-hazelcast-client:latest --rm -it --restart=Never --image-pull-policy="IfNotPresent" -- bash
+k run piton --image=python-hazelcast-client:latest --rm -it --restart=Never --image-pull-policy=IfNotPresent -- bash
 python
 import hazelcast, logging
 
