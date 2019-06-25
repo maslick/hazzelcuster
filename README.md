@@ -153,7 +153,7 @@ k apply -f deployment/k8s-hazelcast.yaml -n hazelcast
 ```
 
 Now you can expose Hazelcast management system to the outside world via:
-1. k port-forward -n hazelcast management-center-xxxxxx 8081:8080
+1. ``k port-forward -n hazelcast management-center-xxxxxx 8081:8080``
 2. via NodePort (get node's public IP, add firewall rule and open port 30100)
 3. via Ingress
 
