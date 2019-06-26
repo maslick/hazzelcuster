@@ -42,10 +42,14 @@ spec:
             httpGet:
               path: /hazelcast-mancenter/
               port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 15
           readinessProbe:
             httpGet:
               path: /hazelcast-mancenter/
               port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 15
           volumeMounts:
             - name: mc-storage
               mountPath: /data

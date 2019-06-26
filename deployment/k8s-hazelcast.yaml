@@ -27,7 +27,7 @@ metadata:
   labels:
     app: hazelcast
 spec:
-  replicas: 3
+  replicas: 2
   serviceName: hazelcast-headless
   selector:
     matchLabels:
