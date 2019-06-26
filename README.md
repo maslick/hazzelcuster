@@ -150,6 +150,7 @@ terraform apply
 gcloud container clusters get-credentials $PROJECT-gke-cluster --zone=europe-west3-a
 k create ns hazelcast
 k apply -f deployment/k8s-hazelcast.yaml -n hazelcast
+k apply -f deployment/k8s-hazelcast-mc.yaml -n hazelcast
 ```
 
 Now you can expose the Hazelcast Management Center to the outside world via:

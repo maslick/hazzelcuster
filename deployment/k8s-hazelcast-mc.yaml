@@ -1,0 +1,68 @@
+---
+# ==================================================================
+# Hazelcast management center (PVC + Deployment + NodePort service)
+# ==================================================================
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mc-volume
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mc
+  labels:
+    app: hazelcast
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hazelcast
+  template:
+    metadata:
+      labels:
+        app: hazelcast
+    spec:
+      containers:
+        - name: mc
+          image: hazelcast/management-center
+          resources:
+            limits:
+              memory: 1Gi
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /hazelcast-mancenter/
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /hazelcast-mancenter/
+              port: 8080
+          volumeMounts:
+            - name: mc-storage
+              mountPath: /data
+      volumes:
+        - name: mc-storage
+          persistentVolumeClaim:
+            claimName: mc-volume
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mc-service
+spec:
+  type: NodePort
+  selector:
+    app: hazelcast
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

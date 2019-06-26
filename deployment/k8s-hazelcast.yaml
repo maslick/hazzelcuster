@@ -17,7 +17,7 @@ data:
           <kubernetes enabled="true"/>
         </join>
       </network>
-      <management-center enabled="true">http://management-center-service.${namespace}.svc:8080/hazelcast-mancenter</management-center>
+      <management-center enabled="true">http://mc-service.${namespace}.svc:8080/hazelcast-mancenter</management-center>
     </hazelcast>
 ---
 apiVersion: apps/v1
@@ -87,85 +87,3 @@ spec:
   ports:
     - protocol: TCP
       port: 5701
----
-# ==================================================================
-# Hazelcast management center (PVC + Deployment + NodePort service)
-# ==================================================================
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: management-center-volume
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: management-center
-  labels:
-    app: hazelcast
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: hazelcast
-      role: mancenter
-  template:
-    metadata:
-      labels:
-        app: hazelcast
-        role: mancenter
-    spec:
-      containers:
-        - name: management-center
-          image: hazelcast/management-center
-          resources:
-            limits:
-              memory: 1Gi
-          ports:
-            - name: mancenter
-              containerPort: 8080
-          livenessProbe:
-            httpGet:
-              path: /hazelcast-mancenter
-              port: 8080
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 15
-            successThreshold: 1
-            failureThreshold: 10
-          readinessProbe:
-            httpGet:
-              path: /hazelcast-mancenter
-              port: 8080
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 15
-            successThreshold: 1
-            failureThreshold: 10
-          volumeMounts:
-            - name: mancenter-storage
-              mountPath: /data
-      volumes:
-        - name: mancenter-storage
-          persistentVolumeClaim:
-            claimName: management-center-volume
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: management-center-service
-spec:
-  type: NodePort
-  selector:
-    app: hazelcast
-    role: mancenter
-  ports:
-    - protocol: TCP
-      port: 8080
-      nodePort: 30100

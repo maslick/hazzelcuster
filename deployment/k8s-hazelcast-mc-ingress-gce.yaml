@@ -1,0 +1,10 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: mc-ingress
+  labels:
+    app: hazelcast
+spec:
+  backend:
+    serviceName: mc-service
+    servicePort: 8080
