@@ -40,19 +40,22 @@ spec:
             - containerPort: 8080
           livenessProbe:
             httpGet:
-              path: /hazelcast-mancenter/
-              port: 8080
+              path: /hazelcast-mancenter/health
+              port: 8081
             initialDelaySeconds: 30
             periodSeconds: 15
           readinessProbe:
             httpGet:
-              path: /hazelcast-mancenter/
-              port: 8080
+              path: /hazelcast-mancenter/health
+              port: 8081
             initialDelaySeconds: 30
             periodSeconds: 15
           volumeMounts:
             - name: mc-storage
               mountPath: /data
+          env:
+            - name: JAVA_OPTS
+              value: "-Dhazelcast.mc.healthCheck.enable=true"
       volumes:
         - name: mc-storage
           persistentVolumeClaim:
