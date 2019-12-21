@@ -4,7 +4,7 @@
            xsi:schemaLocation="http://www.hazelcast.com/schema/config
                   https://hazelcast.com/schema/config/hazelcastconfig-3.10.xsd">
     <group>
-        <name>hazzelcuster</name>
-        <password/>
+        <name>dev</name>
+        <password>dev-pass</password>
     </group>
 </hazelcast>
