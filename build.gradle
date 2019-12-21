@@ -29,7 +29,7 @@ dependencies {
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 task createDockerfile(type: Dockerfile) {
 	destFile = project.file('build/libs/Dockerfile')
-	from 'amazoncorretto:11'
+	from 'maslick/minimalka'
 	instruction 'LABEL maintainer="pavel.masloff@gmail.com"'
 	exposePort 8080
 	copyFile jar.archiveFileName.get(), '/app/app.jar'
