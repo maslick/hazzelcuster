@@ -7,9 +7,10 @@ simple Hazelcast k8s cluster (DNS Lookup)
 ## Usage
 ```
 ./gradlew clean build -x test
-java -Dserver.port=8081 -jar build/libs/hazzelcuster-0.1.jar
-java -Dserver.port=8082 -jar build/libs/hazzelcuster-0.1.jar
-java -Dserver.port=8083 -jar build/libs/hazzelcuster-0.1.jar
+HZ_ARGS="--add-exports java.base/jdk.internal.ref=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.management/sun.management=ALL-UNNAMED --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"
+java -Dserver.port=8081 $HZ_ARGS -jar build/libs/hazzelcuster-0.1.jar
+java -Dserver.port=8082 $HZ_ARGS -jar build/libs/hazzelcuster-0.1.jar
+java -Dserver.port=8083 $HZ_ARGS -jar build/libs/hazzelcuster-0.1.jar
 ```
 
 or 
@@ -17,6 +18,13 @@ or
 ./gradlew bootRun -Dserver.port=8081
 ./gradlew bootRun -Dserver.port=8082
 ./gradlew bootRun -Dserver.port=8083
+```
+
+## Docker
+```
+./gradlew dockerBuild
+HZ_ARGS="--add-exports java.base/jdk.internal.ref=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.management/sun.management=ALL-UNNAMED --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"
+docker run -d -p 8080:8080 -p 5701:5701 -e HZ_ARGS=$HZ_ARGS maslick/hazzelcuster
 ```
 
 ## K8s installation
